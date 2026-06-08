@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Vehicle Rental Dashboard</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background: #f4f6f9;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    width: 220px;
+    height: 100vh;
+    background: #1f4b99;
+    color: white;
+    position: fixed;
+    padding-top: 20px;
+}
+
+.sidebar h2 {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    background: transparent;
+    color: white;
+    text-align: left;
+    cursor: pointer;
+}
+
+.sidebar button:hover {
+    background: #163a75;
+}
+
+/* ===== MAIN ===== */
+.main {
+    margin-left: 230px;
+    padding: 20px;
+}
+
+/* ===== CARDS ===== */
+.cards {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.card {
+    flex: 1;
+    min-width: 180px;
+    background: white;
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ===== SECTIONS ===== */
+.section {
+    background: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+/* ===== INPUTS ===== */
+input {
+    padding: 10px;
+    margin: 5px;
+    width: 200px;
+}
+
+button.action {
+    padding: 10px 15px;
+    background: #1f4b99;
+    color: white;
+    border: none;
+    cursor: pointer;
+    margin: 5px;
+}
+
+button.action:hover {
+    background: #163a75;
+}
+
+/* ===== TABLE ===== */
+table {
+    width: 100%;
+    margin-top: 10px;
+    border-collapse: collapse;
+}
+
+th {
+    background: #1f4b99;
+    color: white;
+    padding: 10px;
+}
+
+td {
+    padding: 10px;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background: #f2f2f2;
+}
+</style>
+</head>
+
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar">
+    <h2>🚗 Rental</h2>
+
+    <button onclick="showSection('dashboard')">📊 Dashboard</button>
+    <button onclick="showSection('owner')">👤 Add Owner</button>
+    <button onclick="showSection('vehicle')">🚘 Add Vehicle</button>
+    <button onclick="showSection('user')">🧑 Register User</button>
+    <button onclick="showSection('book')">📅 Book Vehicle</button>
+    <button onclick="showSection('view')">📋 View Data</button>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main">
+
+    <h1>Vehicle Rental Management System</h1>
+
+    <!-- ===== DASHBOARD ===== -->
+    <div id="dashboard" class="section">
+        <h2>📊 Dashboard</h2>
+<div class="cards">
+    <div class="card">Users: <span id="usersCount">0</span></div>
+    <div class="card">Owners: <span id="ownersCount">0</span></div>
+    <div class="card">Vehicles: <span id="vehiclesCount">0</span></div>
+    <div class="card">Bookings: <span id="bookingsCount">0</span></div>
+
+    <div class="card">Pending: <span id="pendingVehicles">0</span></div>
+    <div class="card">Overdue: <span id="overdueUsers">0</span></div>
+</div>
+
+        <div id="dashboardData"></div>
+    </div>
+
+    <!-- ===== OWNER ===== -->
+    <div id="owner" class="section" style="display:none;">
+        <h2>Add Owner</h2>
+        <input id="ownerName" placeholder="Name">
+        <input id="ownerPhone" placeholder="Phone">
+        <button class="action" onclick="addOwner()">Add</button>
+    </div>
+
+    <!-- ===== VEHICLE ===== -->
+    <div id="vehicle" class="section" style="display:none;">
+        <h2>Add Vehicle</h2>
+        <input id="vehicleOwnerId" placeholder="Owner ID">
+        <input id="vehicleName" placeholder="Name">
+        <input id="vehicleType" placeholder="Type">
+        <input id="vehiclePrice" placeholder="Price">
+        <button class="action" onclick="addVehicle()">Add</button>
+    </div>
+
+    <!-- ===== USER ===== -->
+    <div id="user" class="section" style="display:none;">
+        <h2>Register User</h2>
+        <input id="userName" placeholder="Name">
+        <input id="userPhone" placeholder="Phone">
+        <button class="action" onclick="registerUser()">Register</button>
+    </div>
+
+    <!-- ===== BOOK ===== -->
+    <div id="book" class="section" style="display:none;">
+        <h2>Book Vehicle</h2>
+        <input id="bookUserId" placeholder="User ID">
+        <input id="bookVehicleId" placeholder="Vehicle ID">
+        <input id="bookDays" placeholder="Days">
+        <p><b>Lending Date:</b> <span id="lendingDate"></span></p>
+    <p><b>Due Date:</b> <span id="dueDate"></span></p>
+        <button class="action" onclick="bookVehicle()">Book</button>
+    </div>
+
+    <!-- ===== VIEW ===== -->
+    <div id="view" class="section" style="display:none;">
+        <h2>View Data</h2>
+
+        <button class="action" onclick="getOwners()">Owners</button>
+        <button class="action" onclick="getVehicles()">Vehicles</button>
+        <button class="action" onclick="getUsers()">Users</button>
+        <button class="action" onclick="getBookings()">Bookings</button>
+        <button onclick="loadVehicleTypes()">🚗 Vehicle Types</button>
+        <button onclick="loadfrequent_users()">🔥 Frequent Users</button>
+        <button onclick="loadCommonOwners()">🏆 Common Owners</button>
+        <div id="tableContainer"></div>
+    </div>
+
+</div>
+
+<script src="script.js"></script>
+
+<script>
+function showSection(id) {
+    document.querySelectorAll('.section').forEach(sec => {
+        sec.style.display = 'none';
+    });
+    document.getElementById(id).style.display = 'block';
+}
+</script>
+
+</body>
+</html>
